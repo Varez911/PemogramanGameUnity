@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    public Transform lokasiTembakan;
-    public LineRenderer garisTujuan;
-    public GameObject pointCollider;
+    //public Transform lokasiTembakan;
+    //public LineRenderer garisTujuan;
+    //public GameObject pointCollider;
+    public SpriteRenderer sprite;
     public Rigidbody2D body;
+    public BoxCollider2D box;
+    public Animator animator;
 
     public float jumpHeight = 80f;
     public float kecepatan = 20f;
@@ -23,24 +26,23 @@ public class Movement : MonoBehaviour
     //Dipanggil berkali kali saat frame di update
     void Update()
     {
-        posisiMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 direction = new Vector2(posisiMouse.x - transform.position.x, posisiMouse.y - transform.position.y);
-        Debug.Log(direction);
-        garisTujuan.SetPosition(0, transform.position);
-        lokasiTembakan.right = direction;
-
-        if (Input.GetMouseButtonDown(0))
+        Debug.Log(body.velocity.y);
+        arahGerak = new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical") * jumpHeight);
+        if (arahGerak.x < 0)
         {
-            garisTujuan.enabled = true;
-            Shoot();
+            sprite.flipX = true;
         }
-
-        arahGerak = new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
-
-        if (body.velocity.y < -0.1)
+        else if (arahGerak.x > 0)
         {
-            garisTujuan.enabled = false;
+            sprite.flipX = false;
         }
+        else
+        {
+            sprite.flipX = sprite.flipX;
+        }
+        animator.SetFloat("Speed", Mathf.Abs(arahGerak.x));
+        animator.SetFloat("Airbone", arahGerak.y);
+        animator.SetBool("Ground", isGrounded());
     }
 
     private void FixedUpdate()
@@ -50,11 +52,22 @@ public class Movement : MonoBehaviour
 
     void Move(Vector2 arahGerak, float Kecepatan)
     {
-        body.AddForce(arahGerak * Kecepatan);
+        body.MovePosition((Vector2)transform.position + (arahGerak * Kecepatan * Time.deltaTime));
+        //body.AddForce(arahGerak * kecepatan);
+    }
+
+    private bool isGrounded()
+    {
+        float extraHeight = .2f;
+        RaycastHit2D hit = Physics2D.Raycast(box.bounds.center, Vector2.down, box.bounds.extents.y + extraHeight);
+        
+        Debug.DrawRay(box.bounds.center, Vector2.down *(box.bounds.extents.y + extraHeight), Color.green);
+        return hit.collider != null;
     }
 
     void Shoot()
     {
+        /*
         RaycastHit2D collide = Physics2D.Raycast(lokasiTembakan.position, lokasiTembakan.right);
         if (collide.collider != null)
         {
@@ -62,5 +75,6 @@ public class Movement : MonoBehaviour
             Instantiate(pointCollider, (Vector3)collide.point, lokasiTembakan.rotation);
             Move(-collide.normal * jumpHeight, kecepatan);
         }
+        */
     }
 }

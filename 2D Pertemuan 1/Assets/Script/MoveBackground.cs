@@ -21,17 +21,25 @@ public class MoveBackground : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-
-		x = transform.position.x;
-		x += speed * Time.deltaTime;
-		transform.position = new Vector3 (x, transform.position.y, transform.position.z);
+		float moveDirection = Input.GetAxisRaw("Horizontal");
+		if (moveDirection > 0)
+        {
+			x = transform.position.x;
+			x += speed * Time.deltaTime;
+			transform.position = new Vector3(x, transform.position.y, transform.position.z);
+		}
+		else if (moveDirection < 0)
+        {
+			x = transform.position.x;
+			x += -speed * Time.deltaTime;
+			transform.position = new Vector3(x, transform.position.y, transform.position.z);
+		}
+		
 
 
 
 		if (x <= PontoDeDestino){
 
-			Debug.Log ("hhhh");
 			x = PontoOriginal;
 			transform.position = new Vector3 (x, transform.position.y, transform.position.z);
 		}

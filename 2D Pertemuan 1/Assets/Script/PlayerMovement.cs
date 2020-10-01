@@ -22,11 +22,11 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 mouseposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 arahGerakMouse = new Vector2(mouseposition.x - transform.position.x, mouseposition.y - transform.position.y);
-        lihatMouse(arahGerakMouse);
+        //lihatMouse(arahGerakMouse);
         arahGerak = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         if (Input.GetMouseButtonDown(0))
         {
-            Shoot();
+            //Shoot();
         }
         
     }
