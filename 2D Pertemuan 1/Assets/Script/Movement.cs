@@ -17,6 +17,8 @@ public class Movement : MonoBehaviour
 
     private Vector2 posisiMouse;
     private Vector2 arahGerak;
+    //private float arahGerak;
+    private float jump;
     //Hanya saat Scene di mulai
     void Start()
     {
@@ -26,8 +28,10 @@ public class Movement : MonoBehaviour
     //Dipanggil berkali kali saat frame di update
     void Update()
     {
-        Debug.Log(body.velocity.y);
-        arahGerak = new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical") * jumpHeight);
+        //Debug.Log(body.velocity.x);
+        arahGerak = new Vector2(Input.GetAxisRaw("Horizontal"),0);
+        //arahGerak = Input.GetAxisRaw("Horizontal"); 
+        
         if (arahGerak.x < 0)
         {
             sprite.flipX = true;
@@ -40,20 +44,31 @@ public class Movement : MonoBehaviour
         {
             sprite.flipX = sprite.flipX;
         }
+
+        jump = Input.GetAxisRaw("Vertical");
+
+
         animator.SetFloat("Speed", Mathf.Abs(arahGerak.x));
-        animator.SetFloat("Airbone", arahGerak.y);
-        animator.SetBool("Ground", isGrounded());
+        //animator.SetFloat("Airbone", arahGerak);
+        //animator.SetBool("Ground", isGrounded());
     }
 
     private void FixedUpdate()
     {
         Move(arahGerak, kecepatan);
+        playerJump();
     }
 
     void Move(Vector2 arahGerak, float Kecepatan)
     {
-        body.MovePosition((Vector2)transform.position + (arahGerak * Kecepatan * Time.deltaTime));
-        //body.AddForce(arahGerak * kecepatan);
+        //body.MovePosition((Vector2)transform.position + (arahGerak * Kecepatan * Time.deltaTime));
+        //transform.position += new Vector3(arahGerak, 0, 0) * Kecepatan * Time.deltaTime;
+       // body.AddForce(arahGerak * kecepatan * Time.deltaTime);
+    }
+    
+    void playerJump()
+    {
+        body.AddForce(new Vector2(0, jump * jumpHeight), ForceMode2D.Impulse);
     }
 
     private bool isGrounded()
@@ -65,16 +80,4 @@ public class Movement : MonoBehaviour
         return hit.collider != null;
     }
 
-    void Shoot()
-    {
-        /*
-        RaycastHit2D collide = Physics2D.Raycast(lokasiTembakan.position, lokasiTembakan.right);
-        if (collide.collider != null)
-        {
-            garisTujuan.SetPosition(1, (Vector3)collide.point);
-            Instantiate(pointCollider, (Vector3)collide.point, lokasiTembakan.rotation);
-            Move(-collide.normal * jumpHeight, kecepatan);
-        }
-        */
-    }
 }
