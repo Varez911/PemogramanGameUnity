@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    public PlayerManager playerMovement;
+    public PlayerMovement playerMovement;
     // Start is called before the first frame update
     void Start()
     {
